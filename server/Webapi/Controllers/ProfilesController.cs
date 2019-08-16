@@ -15,36 +15,31 @@ namespace GameTracker.WebApi.Controllers
   [ApiController]
   public class ProfilesController : ControllerBase
   {
-    private readonly HttpClient client;
     private readonly IConfiguration config;
+    private readonly IHttpClientFactory clientFactory;
 
-    public ProfilesController(HttpClient client, IConfiguration config)
+    public ProfilesController(
+      IConfiguration config,
+      IHttpClientFactory clientFactory)
     {
-      this.client = client;
       this.config = config;
+      this.clientFactory = clientFactory;
     }
 
     [HttpGet("{platform}/{gamertag}")]
     public async Task<ActionResult> Get(string platform, string gamertag)
     {
       var url = this.config["TRACKER_API_URL"] + "/profile/" + platform + "/" + gamertag;
-      try
-      {
-        client.DefaultRequestHeaders.Accept.Clear();
-        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        client.DefaultRequestHeaders.Add("TRN-Api-Key", config["TRN-Api-Key"]);
-        Console.WriteLine("API_KEY", config["TRN-Api-Key"]);
-        var responseMessage = await client.GetAsync(url.ToString());
-        if (responseMessage.IsSuccessStatusCode)
-          return Ok(await responseMessage.Content.ReadAsAsync<object>());
-        else
-          return Ok(await responseMessage.Content.ReadAsAsync<object>());
-        // return NotFound(new { message = "Profile not found" });
-      }
-      catch (HttpRequestException ex)
-      {
-        return Ok(new { message = "Server Error trying to get profile from API: " + ex.Message });
-      }
+
+      var request = new HttpRequestMessage(HttpMethod.Get, url);
+      request.Headers.Add("Accept", "application/json");
+      request.Headers.Add("TRN-Api-Key", config["TRN-Api-Key"]);
+      var client = this.clientFactory.CreateClient();
+      var response = await client.SendAsync(request);
+      if (response.IsSuccessStatusCode)
+        return Ok(await response.Content.ReadAsAsync<object>());
+      else
+        return Ok(await response.Content.ReadAsAsync<object>());
     }
   }
 }
