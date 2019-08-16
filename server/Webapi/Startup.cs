@@ -31,6 +31,7 @@ namespace Webapi
       {
         app.UseDeveloperExceptionPage();
       }
+      app.UseCors(builder => builder.WithOrigins(Configuration["CLIENT_URL"]).AllowAnyHeader().AllowAnyOrigin());
       app.UseMvc();
     }
   }

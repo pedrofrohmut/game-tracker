@@ -1,6 +1,6 @@
 <template>
   <header>
-    <img :src="image" />
+    <img :src="image" class="pb-4" />
   </header>
 </template>
 
