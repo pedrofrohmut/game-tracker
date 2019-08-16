@@ -1,3 +1,3 @@
 # Game Tracker
 
-AspNetCore + VueJS App
+AspNetCore + VueJS (TailwindCSS) App
