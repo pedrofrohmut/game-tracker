@@ -27,16 +27,19 @@ namespace GameTracker.WebApi.Controllers
     [HttpGet("{platform}/{gamertag}")]
     public async Task<ActionResult> Get(string platform, string gamertag)
     {
-      var url = new StringBuilder(this.config["TRACKER_API_URL"]);
-      url.Append($"/profile/{platform}/{gamertag}");
+      var url = this.config["TRACKER_API_URL"] + "/profile/" + platform + "/" + gamertag;
       try
       {
-        client.DefaultRequestHeaders.Add("TRN-Api-Key", "2e445edf-1d8e-4950-a330-fe429971b140");
+        client.DefaultRequestHeaders.Accept.Clear();
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        client.DefaultRequestHeaders.Add("TRN-Api-Key", config["TRN-Api-Key"]);
+        Console.WriteLine("API_KEY", config["TRN-Api-Key"]);
         var responseMessage = await client.GetAsync(url.ToString());
         if (responseMessage.IsSuccessStatusCode)
           return Ok(await responseMessage.Content.ReadAsAsync<object>());
         else
-          return NotFound(new { message = "Profile not found" });
+          return Ok(await responseMessage.Content.ReadAsAsync<object>());
+        // return NotFound(new { message = "Profile not found" });
       }
       catch (HttpRequestException ex)
       {

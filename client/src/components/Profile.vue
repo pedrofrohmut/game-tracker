@@ -1,5 +1,18 @@
 <template>
-  <div>Profile</div>
+  <section>
+    <div v-if="loading">
+      <h3>Loading...</h3>
+    </div>
+
+    <div v-if="error">
+      <h3>{{ error }}</h3>
+      <router-link to="/">Go Back</router-link>
+    </div>
+
+    <div v-if="profileData" class="container mx-auto">
+      {{ profileData.metadata.activeLegendName }}
+    </div>
+  </section>
 </template>
 
 <script>
