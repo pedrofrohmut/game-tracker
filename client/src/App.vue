@@ -37,7 +37,8 @@ body {
   color: #fff;
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  font-weight: 400;
+  font-weight: 300;
+  letter-spacing: 1px; 
   text-align: left;
 }
 
